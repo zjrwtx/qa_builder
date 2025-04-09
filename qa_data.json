@@ -1,0 +1,6 @@
+[
+  {
+    "question": "Compute the score of a linear peptide with respect to a spectrum.\n\nGiven: An amino acid string Peptide and a collection of integers LinearSpectrum.\n\nReturn: The linear score of Peptide against Spectrum, LinearScore(Peptide, Spectrum).\n\nSample Dataset\nNQEL\n0 99 113 114 128 227 257 299 355 356 370 371 484",
+    "final_answer": "8"
+  }
+]
