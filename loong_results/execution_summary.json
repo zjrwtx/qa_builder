@@ -1,12 +1,12 @@
 [
   {
     "split_name": "train",
-    "total_samples": 8,
-    "successful_executions": 8,
-    "success_rate": 100.0,
-    "failed_executions": 0,
-    "failure_rate": 0.0,
-    "total_processing_time": 59.64319443702698,
-    "average_time_per_sample": 7.455399304628372
+    "total_samples": 38,
+    "successful_executions": 31,
+    "success_rate": 81.57894736842105,
+    "failed_executions": 7,
+    "failure_rate": 18.421052631578945,
+    "total_processing_time": 18.247573137283325,
+    "average_time_per_sample": 0.4801992930864033
   }
 ]

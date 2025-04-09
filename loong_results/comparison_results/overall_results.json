@@ -1,14 +1,14 @@
 [
   {
-    "total_samples": 8,
-    "successful_executions": 8,
-    "correct_answers": 5,
-    "execution_success_rate": 1.0,
-    "accuracy": 0.625,
+    "total_samples": 38,
+    "successful_executions": 31,
+    "correct_answers": 8,
+    "execution_success_rate": 0.8157894736842105,
+    "accuracy": 0.21052631578947367,
     "match_types": {
-      "exact": 5,
+      "exact": 8,
       "numeric": 0,
-      "none": 3
+      "none": 23
     },
     "domain": "train"
   }
