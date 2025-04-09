@@ -1,7 +1,7 @@
 import gradio as gr
 import json
 import os
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 
 # 存储所有 QA 对的列表
 qa_pairs: List[Dict[str, str]] = []
@@ -15,15 +15,26 @@ def add_qa(question: str, answer: str) -> str:
         })
     return json.dumps(qa_pairs, ensure_ascii=False, indent=2)
 
-def delete_qa(index: int) -> str:
+def delete_qa(index: Optional[int]) -> str:
     """删除指定索引的 QA 对并返回当前所有 QA 对的 JSON 字符串"""
+    global qa_pairs
+    print(f"尝试删除索引 {index}, 当前有 {len(qa_pairs)} 个 QA 对")
+    
+    # 确保索引是有效的整数
+    if index is None:
+        print("删除失败：索引为 None")
+        return json.dumps(qa_pairs, ensure_ascii=False, indent=2)
+        
     if 0 <= index < len(qa_pairs):
         del qa_pairs[index]
+        print(f"删除成功，剩余 {len(qa_pairs)} 个 QA 对")
+    else:
+        print(f"删除失败：索引 {index} 超出范围")
     return json.dumps(qa_pairs, ensure_ascii=False, indent=2)
 
 def get_qa_list():
     """返回 QA 对的列表，用于显示在下拉框中"""
-    return [f"{i}: {qa['question']}" for i, qa in enumerate(qa_pairs)]
+    return [f"{i}: {qa['question'][:50]}..." for i, qa in enumerate(qa_pairs)]
 
 def save_to_json():
     """将 QA 对保存到 JSON 文件"""
@@ -49,6 +60,23 @@ def load_and_display_qa() -> Tuple[str, list]:
     """加载并显示 QA 数据"""
     return json.dumps(qa_pairs, ensure_ascii=False, indent=2), get_qa_list()
 
+def process_delete_selection(selection: str) -> Optional[int]:
+    """从下拉框选择中提取索引值"""
+    print(f"收到选择的值: '{selection}'")
+    if selection is None or selection == "":
+        print("无效选择：为空")
+        return None
+    
+    try:
+        # 从选择中提取索引部分
+        index_str = selection.split(":")[0].strip()
+        index = int(index_str)
+        print(f"解析选择的索引: {index}")
+        return index
+    except (ValueError, IndexError, AttributeError) as e:
+        print(f"解析索引出错: {str(e)}, 选择值: '{selection}'")
+        return None
+
 # 创建 Gradio 界面
 with gr.Blocks() as demo:
     gr.Markdown("# QA 数据收集工具")
@@ -68,6 +96,7 @@ with gr.Blocks() as demo:
         with gr.Column():
             qa_dropdown = gr.Dropdown(label="选择要删除的 QA 对", choices=[], interactive=True)
             delete_btn = gr.Button("删除选择的 QA 对")
+            delete_status = gr.Textbox(label="删除状态", interactive=False)
             
     with gr.Row():
         with gr.Column():
@@ -85,16 +114,23 @@ with gr.Blocks() as demo:
         outputs=qa_dropdown
     )
     
+    # 删除功能
+    def update_delete_status(index):
+        if index is None:
+            return "删除失败：未选择有效的 QA 对"
+        return f"成功删除索引为 {index} 的 QA 对"
+    
+    # 使用正确的方式处理删除操作
+    def handle_delete(selection):
+        index = process_delete_selection(selection)
+        json_str = delete_qa(index)
+        # 同时返回三个值：JSON输出、下拉框选项和状态信息
+        return json_str, get_qa_list(), update_delete_status(index)
+    
     delete_btn.click(
-        fn=lambda x: int(x.split(":")[0]) if x else -1,
+        fn=handle_delete,
         inputs=[qa_dropdown],
-        outputs=None
-    ).then(
-        fn=delete_qa,
-        outputs=json_output
-    ).then(
-        fn=get_qa_list,
-        outputs=qa_dropdown
+        outputs=[json_output, qa_dropdown, delete_status]
     )
     
     save_btn.click(
@@ -111,13 +147,14 @@ with gr.Blocks() as demo:
         outputs=[json_output, qa_dropdown]
     )
 
+    # 在启动时加载数据到界面
+    demo.load(
+        fn=load_and_display_qa,
+        inputs=None,
+        outputs=[json_output, qa_dropdown]
+    )
+
 if __name__ == "__main__":
-    # 尝试加载现有的 QA 数据文件（如果存在）
-    try:
-        if os.path.exists("qa_data.json"):
-            with open("qa_data.json", "r", encoding="utf-8") as f:
-                qa_pairs = json.load(f)
-    except Exception as e:
-        print(f"无法加载现有的 QA 数据: {str(e)}")
+
     
     demo.launch() 
