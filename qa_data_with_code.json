@@ -33,10 +33,6 @@
     "question": "Given: Three positive integers k\n, m\n, and n\n, representing a population containing k+m+n\n organisms: k\n individuals are homozygous dominant for a factor, m\n are heterozygous, and n\n are homozygous recessive.\n\nReturn: The probability that two randomly selected mating organisms will produce an individual possessing a dominant allele (and thus displaying the dominant phenotype). Assume that any two organisms can mate.\n\nSample Dataset\n2 2 2",
     "final_answer": "0.78333",
     "rationale": "from itertools import combinations\n\nk = 2\nm = 2\nn = 2\n\ntotal = k + m + n\n\nprob_k_k = (k / total) * ((k - 1) / (total - 1))\nprob_k_m = (k / total) * (m / (total - 1)) + (m / total) * (k / (total - 1))\nprob_k_n = (k / total) * (n / (total - 1)) + (n / total) * (k / (total - 1))\nprob_m_m = (m / total) * ((m - 1) / (total - 1)) * 0.75\nprob_m_n = (m / total) * (n / (total - 1)) * 0.5 + (n / total) * (m / (total - 1)) * 0.5\n\nresult = prob_k_k + prob_k_m + prob_k_n + prob_m_m + prob_m_n\nprint(result)"
-  },
-  {
-    "question": "Problem\nThe 20 commonly occurring amino acids are abbreviated by using 20 letters from the English alphabet (all letters except for B, J, O, U, X, and Z). Protein strings are constructed from these 20 symbols. Henceforth, the term genetic string will incorporate protein strings along with DNA strings and RNA strings.\n\nThe RNA codon table dictates the details regarding the encoding of specific codons into the amino acid alphabet.\n\nGiven: An RNA string s\n corresponding to a strand of mRNA (of length at most 10 kbp).\n\nReturn: The protein string encoded by s\n.\n\nSample Dataset\nAUGGCCAUGGCGCCCAGAACUGAGAUCAAUAGUACCCGUAUUAACGGGUGA",
-    "final_answer": "MAMAPRTEINSTRING",
-    "rationale": "s = \"GAGCCTACTAACGGGAT\"\nt = \"CATCGTAATGACGGCCT\"\nhamming_distance = sum(1 for a, b in zip(s, t) if a != b)\nresult = hamming_distance\nprint(result)"
   }
+
 ]

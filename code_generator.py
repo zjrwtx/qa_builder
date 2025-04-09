@@ -1,3 +1,5 @@
+
+
 import json
 import os
 import logging
@@ -107,7 +109,7 @@ def main():
             logging.error(f"Input file {input_file} does not exist")
             return
         
-        with open(input_file, 'r') as f:
+        with open(input_file, 'r', encoding='utf-8') as f:  # Added explicit UTF-8 encoding
             try:
                 data = json.load(f)
             except json.JSONDecodeError as e:
@@ -177,4 +179,4 @@ def main():
         logging.error(f"Error during execution: {e}")
 
 if __name__ == "__main__":
-    main() 
+    main()

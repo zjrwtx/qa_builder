@@ -1,0 +1,15 @@
+[
+  {
+    "total_samples": 8,
+    "successful_executions": 8,
+    "correct_answers": 5,
+    "execution_success_rate": 1.0,
+    "accuracy": 0.625,
+    "match_types": {
+      "exact": 5,
+      "numeric": 0,
+      "none": 3
+    },
+    "domain": "train"
+  }
+]
