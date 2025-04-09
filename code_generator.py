@@ -1,5 +1,3 @@
-
-
 import json
 import os
 import logging
@@ -11,6 +9,7 @@ from camel.agents import ChatAgent
 from camel.configs import ChatGPTConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
+from tqdm import tqdm
 
 # Configure logging
 logging.basicConfig(
@@ -144,6 +143,9 @@ def main():
         
         processed_data = []
         
+        # 创建进度条
+        pbar = tqdm(total=total_questions, desc="处理问题进度")
+        
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Submit batches for processing
             futures = []
@@ -164,8 +166,13 @@ def main():
                 result = future.result()
                 if batch_size == 1:
                     processed_data.append(result)
+                    pbar.update(1)  # 更新进度条
                 else:
                     processed_data.extend(result)
+                    pbar.update(len(result))  # 更新进度条
+        
+        # 关闭进度条
+        pbar.close()
         
         # Save updated JSON to new file
         try:
