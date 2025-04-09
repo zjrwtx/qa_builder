@@ -85,6 +85,9 @@ def normalize_value(value: Any) -> str:
         # Use scientific notation for very small or large numbers
         if abs(float_val) < 0.0001 or abs(float_val) > 10000:
             return f"{float_val:.10e}"
+        # For numbers between 0 and 1, use 5 decimal places
+        if 0 <= float_val <= 1:
+            return f"{float_val:.5f}".rstrip('0').rstrip('.')
         # Otherwise use fixed precision
         return f"{float_val:.10f}".rstrip('0').rstrip('.') if '.' in f"{float_val:.10f}" else f"{float_val:.10f}"
     except (ValueError, TypeError):
@@ -111,6 +114,10 @@ def is_numeric_match(result: str, answer: str, tolerance: float = 1e-6) -> bool:
         # For very small values, use absolute tolerance
         if abs(answer_float) < 1e-10:
             return abs(result_float - answer_float) < tolerance
+        
+        # For numbers between 0 and 1, use a slightly larger tolerance
+        if 0 <= answer_float <= 1:
+            tolerance = max(tolerance, 1e-5)
         
         # Otherwise use relative tolerance
         relative_diff = abs((result_float - answer_float) / answer_float)
@@ -231,6 +238,38 @@ def compare_results(execution_results: List[Dict[str, Any]],
     }
 
 
+def save_matched_results(comparison_results: Dict[str, Any], dataset_samples: Dict[int, Dict[str, Any]], output_file: str) -> None:
+    """
+    Save the correctly matched results to a new JSON file in the original data format.
+    
+    Args:
+        comparison_results: Dictionary with comparison results.
+        dataset_samples: Dictionary mapping sample IDs to dataset samples.
+        output_file: Path to the output JSON file.
+    """
+    matched_samples = []
+    
+    for result in comparison_results.get("detailed_results", []):
+        if result.get("is_match"):
+            # Get the original sample
+            sample_id = result.get("id")
+            if sample_id in dataset_samples:
+                original_sample = dataset_samples[sample_id]
+                # Create a sample in the original format
+                matched_sample = {
+                    "question": original_sample.get("question", ""),
+                    "final_answer": original_sample.get("final_answer", ""),
+                    "rationale": original_sample.get("rationale", "")
+                }
+                matched_samples.append(matched_sample)
+    
+    # Save to JSON file
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(matched_samples, f, indent=2, ensure_ascii=False)
+    
+    print(f"Saved {len(matched_samples)} matched samples to {output_file}")
+
+
 def analyze_domain(domain:str, 
                    execution_file: str, 
                    dataset_name: str = "zjrwtxtechstudio/test2025") -> Dict[str, Any]:
@@ -243,7 +282,7 @@ def analyze_domain(domain:str,
         dataset_name: Name of the Hugging Face dataset.
         
     Returns:
-        Dictionary with analysis results.
+        Dictionary with analysis results and dataset samples.
     """
     print(f"Analyzing domain: {domain}")
     
@@ -288,7 +327,7 @@ def analyze_domain(domain:str,
           f"({comparison_results['accuracy']*100:.2f}%)")
     print(f"  Match types: {comparison_results['match_types']}")
     
-    return comparison_results
+    return comparison_results, dataset_samples
 
 
 def generate_visualizations(all_results: List[Dict[str, Any]], output_dir: str) -> None:
@@ -391,14 +430,19 @@ def main():
     all_results = []
     for execution_file in execution_files:
         # domain = extract_domain_from_filename(execution_file)
-        result = analyze_domain("train", execution_file)
-        if result:
-            all_results.append(result)
+        result_data = analyze_domain("train", execution_file)
+        if result_data:
+            comparison_results, dataset_samples = result_data
+            all_results.append(comparison_results)
+            
+            # Save matched results in the original format
+            matched_output_file = os.path.join(output_dir, f"matched_samples_train.json")
+            save_matched_results(comparison_results, dataset_samples, matched_output_file)
             
             # Save detailed results for this domain
             detailed_file = os.path.join(output_dir, f"detailed_train.json")
             with open(detailed_file, 'w', encoding='utf-8') as f:
-                json.dump(result["detailed_results"], f, indent=2, ensure_ascii=False)
+                json.dump(comparison_results["detailed_results"], f, indent=2, ensure_ascii=False)
     
     # Generate visualizations
     generate_visualizations(all_results, output_dir)

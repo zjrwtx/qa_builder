@@ -1,2 +1,2 @@
 Domain,Total Samples,Execution Success Rate,Accuracy,Exact Matches,Numeric Matches,No Matches
-train,38,81.57894736842105,21.052631578947366,8,0,23
+train,75,60.0,18.666666666666668,14,0,31

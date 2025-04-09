@@ -2,12 +2,12 @@
 
 ## Overall Statistics
 
-- **Total Samples Analyzed**: 38
-- **Average Execution Success Rate**: 81.58%
-- **Average Accuracy**: 21.05%
+- **Total Samples Analyzed**: 75
+- **Average Execution Success Rate**: 60.00%
+- **Average Accuracy**: 18.67%
 
 ## Domain-Specific Results
 
 | Domain   |   Total Samples |   Execution Success Rate |   Accuracy |   Exact Matches |   Numeric Matches |   No Matches |
 |:---------|----------------:|-------------------------:|-----------:|----------------:|------------------:|-------------:|
-| train    |              38 |                  81.5789 |    21.0526 |               8 |                 0 |           23 |
+| train    |              75 |                       60 |    18.6667 |              14 |                 0 |           31 |
