@@ -1,0 +1,3 @@
+camel-ai>=0.1.0
+biopython>=1.81
+# No additional packages needed for multithreading as ThreadPoolExecutor is in the standard library 
