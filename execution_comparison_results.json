@@ -1,0 +1,20 @@
+{
+  "default": [
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "141.042",
+      "match_status": true,
+      "result": "141.042",
+      "error_message": null
+    },
+    {
+      "execution_status": "FAILURE",
+      "execution_successful": false,
+      "execution_result": "",
+      "match_status": false,
+      "result": "",
+      "error_message": "Solution code error:\nFile \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpo4ugu6a1.py\", line 1\n    Processing error\n               ^^^^^\nSyntaxError: invalid syntax"
+    }
+  ]
+}

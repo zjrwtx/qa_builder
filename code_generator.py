@@ -6,7 +6,7 @@ import argparse
 import re
 from concurrent.futures import ThreadPoolExecutor
 from camel.agents import ChatAgent
-from camel.configs import ChatGPTConfig
+from camel.configs import ChatGPTConfig,QwenConfig,GeminiConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from tqdm import tqdm
@@ -48,6 +48,9 @@ def clean_code(code_text):
     
     return code_text
 
+
+with open('merged_python_files.txt', 'r', encoding='utf-8') as f:
+    medicine_calculation_code = f.read()
 def process_question(item, agent, index, total):
     """Process a single question using the LLM agent"""
     question = item['question']
@@ -56,12 +59,13 @@ def process_question(item, agent, index, total):
     try:
         # Construct prompt requesting BioPython-based solutions
         prompt = f"""
-        Based on the following bioinformatics problem, write Python code to solve it.
-        Use BioPython library whenever possible.
+        Based on the following medicine calculation problem, write Python code to solve it.
+        please use the following function as your codebase:{medicine_calculation_code}
         Return only the pure Python code without any explanations, markdown formatting, or code block markers.
         Do not include triple quotes, comments explaining what the code does, or any non-code elements.
         
         IMPORTANT: Your code MUST store the final answer in a variable named 'result' and include 'print(result)' at the end.
+        please dont import any package whic start with camel.toolkits
         
         Problem: {question}
         """
@@ -74,10 +78,18 @@ def process_question(item, agent, index, total):
         clean_code_result = clean_code(code)
         item['rationale'] = clean_code_result
         logging.info(f"Question {index+1} processed successfully")
+        
+        # Reset agent history after each request
+        agent.reset()
+        
         return item
     except Exception as e:
         logging.error(f"Error processing question {index+1}: {e}")
         item['rationale'] = "Processing error"
+        
+        # Also reset agent history in case of error
+        agent.reset()
+        
         return item
 
 def process_batch(batch_items, agent, start_index, total):
@@ -111,20 +123,44 @@ def main():
         with open(input_file, 'r', encoding='utf-8') as f:  # Added explicit UTF-8 encoding
             try:
                 data = json.load(f)
+                data = data[:100]
             except json.JSONDecodeError as e:
                 logging.error(f"JSON parsing error: {e}")
                 return
         
         # Initialize model
         logging.info("Initializing LLM model")
+        # model = ModelFactory.create(
+        #     model_platform=ModelPlatformType.OPENAI,
+        #     model_type=ModelType.GPT_4O,
+        #     model_config_dict=ChatGPTConfig().as_dict(),
+        # )
+
+        # model = ModelFactory.create(
+        #     model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        #     model_type="google/gemini-2.5-pro-preview-03-25",
+        #     api_key=os.environ["OPENROUTER_API_KEY"],
+        #     url="https://openrouter.ai/api/v1",
+        #     # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
+        # )
+        # model = ModelFactory.create(
+        #     model_platform=ModelPlatformType.QWEN,
+        #     model_type=ModelType.QWEN_2_5_CODER_32B,
+        #     model_config_dict=QwenConfig(temperature=0.2).as_dict(),
+        # )
         model = ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_4O,
-            model_config_dict=ChatGPTConfig().as_dict(),
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_5_PRO_EXP,
+          
+            model_config_dict=GeminiConfig(temperature=0.2).as_dict(),
+            # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
         )
+
+
         
         # Initialize agent
         camel_agent = ChatAgent(model=model)
+        camel_agent.reset()
         
         # Process questions using thread pool
         total_questions = len(data)
