@@ -9,12 +9,76 @@
       "error_message": null
     },
     {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "79.333",
+      "match_status": true,
+      "result": "79.333",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "10.018",
+      "match_status": null,
+      "result": "10.018",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "33.034",
+      "match_status": true,
+      "result": "33.034",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "76.431",
+      "match_status": null,
+      "result": "76.431",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "33.001",
+      "match_status": true,
+      "result": "33.001",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "63.556",
+      "match_status": null,
+      "result": "63.556",
+      "error_message": null
+    },
+    {
+      "execution_status": "SUCCESS",
+      "execution_successful": true,
+      "execution_result": "44.363",
+      "match_status": null,
+      "result": "44.363",
+      "error_message": null
+    },
+    {
       "execution_status": "FAILURE",
       "execution_successful": false,
       "execution_result": "",
       "match_status": false,
       "result": "",
-      "error_message": "Solution code error:\nFile \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpo4ugu6a1.py\", line 1\n    Processing error\n               ^^^^^\nSyntaxError: invalid syntax"
+      "error_message": "Solution code error:\nTraceback (most recent call last):\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpbfrz2s9o.py\", line 48, in <module>\n    result = str(generate_cockcroft_gault_explanation(creatinine_clearance_inputs)[\"Answer\"])\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/creatinine_clearance.py\", line 148, in generate_cockcroft_gault_explanation\n    serum_creatinine_explanation, serum_creatinine = conversion_explanation(\n                                                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 310, in conversion_explanation\n    mass_explanation, mass_value = mass_conversion_explanation(\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 417, in mass_conversion_explanation\n    conv_explanation, mass_value = mol_g_explanation(\n                                   ^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 112, in mol_g_explanation\n    mol_explanation, mol = molg_to_molg_explanation(\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 93, in molg_to_molg_explanation\n    conversion_factors_dict[src_unit]\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'μmol'"
+    },
+    {
+      "execution_status": "FAILURE",
+      "execution_successful": false,
+      "execution_result": "",
+      "match_status": false,
+      "result": "",
+      "error_message": "Solution code error:\nTraceback (most recent call last):\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpo2fnqj48.py\", line 31, in <module>\n    cg_result = generate_cockcroft_gault_explanation(input_variables)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/creatinine_clearance.py\", line 148, in generate_cockcroft_gault_explanation\n    serum_creatinine_explanation, serum_creatinine = conversion_explanation(\n                                                     ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 310, in conversion_explanation\n    mass_explanation, mass_value = mass_conversion_explanation(\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 417, in mass_conversion_explanation\n    conv_explanation, mass_value = mol_g_explanation(\n                                   ^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 112, in mol_g_explanation\n    mol_explanation, mol = molg_to_molg_explanation(\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/2q/_bzfv_vn0lngh7kmv0q_3rm00000gn/T/tmpmnchjhby/lib/python3.12/site-packages/medcalc/utils/unit_converter_new.py\", line 93, in molg_to_molg_explanation\n    conversion_factors_dict[src_unit]\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'μmol'"
     }
   ]
 }

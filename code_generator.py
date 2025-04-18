@@ -64,8 +64,9 @@ def process_question(item, agent, index, total):
         Return only the pure Python code without any explanations, markdown formatting, or code block markers.
         Do not include triple quotes, comments explaining what the code does, or any non-code elements.
         
-        IMPORTANT: Your code MUST store the final answer in a variable named 'result' and include 'print(result)' at the end.
-        please dont import any package whic start with camel.toolkits
+        IMPORTANT: Your code MUST store the only final_answer number in a variable named 'result' ,dont include rationale in result,and include 'print(result)' at the end.
+        please remember to import the from medcalc and use the functions from it.
+        
         
         Problem: {question}
         """
@@ -123,18 +124,18 @@ def main():
         with open(input_file, 'r', encoding='utf-8') as f:  # Added explicit UTF-8 encoding
             try:
                 data = json.load(f)
-                data = data[:100]
+                data = data[:10]
             except json.JSONDecodeError as e:
                 logging.error(f"JSON parsing error: {e}")
                 return
         
         # Initialize model
         logging.info("Initializing LLM model")
-        # model = ModelFactory.create(
-        #     model_platform=ModelPlatformType.OPENAI,
-        #     model_type=ModelType.GPT_4O,
-        #     model_config_dict=ChatGPTConfig().as_dict(),
-        # )
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.OPENAI,
+            model_type=ModelType.GPT_4_1,
+            model_config_dict=ChatGPTConfig().as_dict(),
+        )
 
         # model = ModelFactory.create(
         #     model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
@@ -148,13 +149,13 @@ def main():
         #     model_type=ModelType.QWEN_2_5_CODER_32B,
         #     model_config_dict=QwenConfig(temperature=0.2).as_dict(),
         # )
-        model = ModelFactory.create(
-            model_platform=ModelPlatformType.GEMINI,
-            model_type=ModelType.GEMINI_2_5_PRO_EXP,
+        # model = ModelFactory.create(
+        #     model_platform=ModelPlatformType.GEMINI,
+        #     model_type=ModelType.GEMINI_2_5_PRO_EXP,
           
-            model_config_dict=GeminiConfig(temperature=0.2).as_dict(),
-            # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
-        )
+        #     model_config_dict=GeminiConfig(temperature=0.2).as_dict(),
+        #     # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
+        # )
 
 
         

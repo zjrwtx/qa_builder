@@ -34,6 +34,10 @@ async def setup_verifier(required_packages: List[str], timeout: float = 60.0) ->
     Returns:
         A configured PythonVerifier instance.
     """
+    # 确保medcalc-bench被安装，无论是否在required_packages列表中
+    if "medcalc-bench" not in required_packages:
+        required_packages = required_packages + ["medcalc-bench"]
+    
     verifier = PythonVerifier(timeout=timeout, required_packages=required_packages)
     await verifier.setup(uv=True)
     return verifier
@@ -317,6 +321,10 @@ async def group_by_packages(items: List[Tuple[int, Dict[str, Any]]]) -> Dict[Tup
         elif item.get("metadata", {}).get("domain") == "Mathematical_Programming" or \
              (item.get("metadata", {}).get("library") == "SCIP"):
             packages = ["pyscipopt", "pandas", "gurobipy", "cvxpy", "matplotlib",]
+        
+        # 确保medcalc-bench被添加到所有包组中
+        if "medcalc-bench" not in packages:
+            packages.append("medcalc-bench")
         
         # Sort packages to ensure consistent grouping
         key = tuple(sorted(packages))
@@ -605,6 +613,15 @@ async def main():
     Main function to execute and compare rationale code with final answers.
     """
     import argparse
+    import subprocess
+    
+    # 首先尝试安装 medcalc-bench 包
+    print("尝试安装 medcalc-bench 包...")
+    try:
+        subprocess.check_call(["pip", "install", "medcalc-bench"])
+        print("medcalc-bench 安装成功")
+    except Exception as e:
+        print(f"安装 medcalc-bench 时出错: {e}")
     
     # Get the directory where this script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
