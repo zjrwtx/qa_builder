@@ -5,7 +5,7 @@ import sys
 
 def filter_match_false(input_file, output_file=None):
     """
-    从JSON文件中过滤掉execution.match_status为false的数据元素
+    从JSON文件中过滤掉execution.match_status为None的数据元素
     :param input_file: 输入的JSON文件路径
     :param output_file: 输出的JSON文件路径，默认为None时覆盖原文件
     """
@@ -24,20 +24,20 @@ def filter_match_false(input_file, output_file=None):
         if isinstance(data, dict):
             # 如果是单个对象
             original_count = 1
-            if data.get('execution', {}).get('match_status') == False:
-                print(f"警告：整个JSON对象的match_status为false，不会输出结果")
+            if data.get('execution', {}).get('match_status') is None:
+                print(f"警告：整个JSON对象的match_status为None，不会输出结果")
                 filtered_count = 0
                 return False
             filtered_count = 1
         elif isinstance(data, list):
-            # 如果是数组，过滤掉execution.match_status为false的元素
+            # 如果是数组，过滤掉execution.match_status为None的元素
             original_count = len(data)
             filtered_data = []
             
             for item in data:
                 # 检查嵌套的execution.match_status字段
-                if item.get('execution', {}).get('match_status') == False:
-                    continue  # 跳过match_status为false的元素
+                if item.get('execution', {}).get('match_status') is None:
+                    continue  # 跳过match_status为None的元素
                 filtered_data.append(item)
             
             filtered_count = len(filtered_data)

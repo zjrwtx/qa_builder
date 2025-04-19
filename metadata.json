@@ -1,0 +1,11 @@
+"metadata": {
+    "license": "CC-BY-SA-4.0",
+    "source": "https://huggingface.co/datasets/ncbi/MedCalc-Bench-v1.0",
+    "domain": "medicine",
+    "required_dependencies": [
+      "medcalc-bench==1.7"
+    ],
+    "name": "Loong_medicine",
+    "contributor": "Yifeng Wang ,Zikai Xiao,Fangyijie Wang",
+    "date_created": "2025-04-19",
+  }

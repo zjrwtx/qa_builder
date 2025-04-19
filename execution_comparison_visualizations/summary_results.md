@@ -2,12 +2,12 @@
 
 ## Overall Statistics
 
-- **Total Samples Analyzed**: 1192
-- **Average Execution Success Rate**: 93.71%
-- **Average Match Rate**: 76.85%
+- **Total Samples Analyzed**: 1117
+- **Average Execution Success Rate**: 100.00%
+- **Average Match Rate**: 82.01%
 
 ## Domain-Specific Results
 
 | Domain   |   Total Samples |   Execution Success Rate |   Match Rate |
 |:---------|----------------:|-------------------------:|-------------:|
-| default  |            1192 |                  93.7081 |      76.8456 |
+| default  |            1117 |                      100 |      82.0054 |
