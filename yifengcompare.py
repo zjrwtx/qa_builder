@@ -618,7 +618,7 @@ async def main():
     # 首先尝试安装 medcalc-bench 包
     print("尝试安装 medcalc-bench 包...")
     try:
-        subprocess.check_call(["pip", "install", "medcalc-bench"])
+        subprocess.check_call(["pip", "install", "medcalc-bench", "--upgrade"])
         print("medcalc-bench 安装成功")
     except Exception as e:
         print(f"安装 medcalc-bench 时出错: {e}")
