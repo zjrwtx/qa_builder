@@ -120,7 +120,7 @@ def main():
         with open(input_file, 'r', encoding='utf-8') as f:  # Added explicit UTF-8 encoding
             try:
                 data = json.load(f)
-                data = data[:10]
+                data = data[:]
             except json.JSONDecodeError as e:
                 logging.error(f"JSON parsing error: {e}")
                 return
