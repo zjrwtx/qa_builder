@@ -6,7 +6,7 @@ import argparse
 import re
 from concurrent.futures import ThreadPoolExecutor
 from camel.agents import ChatAgent
-from camel.configs import ChatGPTConfig,QwenConfig,GeminiConfig
+from camel.configs import ChatGPTConfig,QwenConfig,GeminiConfig,DeepSeekConfig
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from tqdm import tqdm
@@ -51,15 +51,18 @@ def clean_code(code_text):
 
 with open('merged_python_files.txt', 'r', encoding='utf-8') as f:
     medicine_calculation_code = f.read()
-def process_question(item, agent, index, total):
+def process_question(item, model, index, total):
     """Process a single question using the LLM agent"""
     question = item['question']
     logging.info(f"Processing question {index+1}/{total}")
     
     try:
+        # Create a new agent for each question
+        agent = ChatAgent(model=model)
+        
         # Construct prompt requesting BioPython-based solutions
         prompt = f"""
-        Based on the following medicine calculation problem, write Python code to solve it.
+        Based on the following medicine calculation problem,please think step by step and write Python code to solve it.
         please use the following function as your codebase:{medicine_calculation_code}
         Return only the pure Python code without any explanations, markdown formatting, or code block markers.
         Do not include triple quotes, comments explaining what the code does, or any non-code elements.
@@ -80,25 +83,18 @@ def process_question(item, agent, index, total):
         item['rationale'] = clean_code_result
         logging.info(f"Question {index+1} processed successfully")
         
-        # Reset agent history after each request
-        agent.reset()
-        
         return item
     except Exception as e:
         logging.error(f"Error processing question {index+1}: {e}")
         item['rationale'] = "Processing error"
-        
-        # Also reset agent history in case of error
-        agent.reset()
-        
         return item
 
-def process_batch(batch_items, agent, start_index, total):
+def process_batch(batch_items, model, start_index, total):
     """Process a batch of questions"""
     results = []
     for i, item in enumerate(batch_items):
         idx = start_index + i
-        results.append(process_question(item, agent, idx, total))
+        results.append(process_question(item, model, idx, total))
     return results
 
 def main():
@@ -136,32 +132,11 @@ def main():
             model_type=ModelType.GPT_4_1,
             model_config_dict=ChatGPTConfig().as_dict(),
         )
-
         # model = ModelFactory.create(
-        #     model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
-        #     model_type="google/gemini-2.5-pro-preview-03-25",
-        #     api_key=os.environ["OPENROUTER_API_KEY"],
-        #     url="https://openrouter.ai/api/v1",
-        #     # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
+        #     model_platform=ModelPlatformType.DEEPSEEK,
+        #     model_type=ModelType.DEEPSEEK_REASONER,
+        #     model_config_dict=DeepSeekConfig(temperature=0.2).as_dict(),
         # )
-        # model = ModelFactory.create(
-        #     model_platform=ModelPlatformType.QWEN,
-        #     model_type=ModelType.QWEN_2_5_CODER_32B,
-        #     model_config_dict=QwenConfig(temperature=0.2).as_dict(),
-        # )
-        # model = ModelFactory.create(
-        #     model_platform=ModelPlatformType.GEMINI,
-        #     model_type=ModelType.GEMINI_2_5_PRO_EXP,
-          
-        #     model_config_dict=GeminiConfig(temperature=0.2).as_dict(),
-        #     # model_config_dict={"max_tokens": 4096}, # Config the max_token carefully
-        # )
-
-
-        
-        # Initialize agent
-        camel_agent = ChatAgent(model=model)
-        camel_agent.reset()
         
         # Process questions using thread pool
         total_questions = len(data)
@@ -190,12 +165,12 @@ def main():
                 if batch_size == 1:
                     # Process single item directly
                     futures.append(
-                        executor.submit(process_question, batch_items[0], camel_agent, start_idx, total_questions)
+                        executor.submit(process_question, batch_items[0], model, start_idx, total_questions)
                     )
                 else:
                     # Process batch
                     futures.append(
-                        executor.submit(process_batch, batch_items, camel_agent, start_idx, total_questions)
+                        executor.submit(process_batch, batch_items, model, start_idx, total_questions)
                     )
             
             # Collect results
